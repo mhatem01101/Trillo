@@ -32,7 +32,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build   # e.g., compiles SASS → css/
+        run: npm run build:css   # e.g., compiles SASS → css/
 
       # Upload the repo root after the build step has produced css/assets
       - name: Upload Pages artifact
