@@ -1,5 +1,5 @@
 
-name: Deploy to GitHub Pages (Static)
+name: Deploy Static Site (Root)
 
 on:
   push:
@@ -22,12 +22,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # If your site is in the repo root, set path: .
-      # If it's in /docs, set path: ./docs
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build   # e.g., compiles SASS → css/
+
+      # Upload the repo root after the build step has produced css/assets
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: ./
 
   deploy:
     needs: build
