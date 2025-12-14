@@ -6,17 +6,17 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write # needed to push to gh-pages
+  pages: read # not strictly necessary if not using actions/deploy-pages
+  id-token: write # not used here
 
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: self-hosted
+  build-deploy:
+    runs-on: self-hosted # your Windows runner
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,22 +30,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build:css # e.g., compiles SASS → css/
+      - name: Build CSS
+        run: npm run build:css
 
-      # Upload the repo root after the build step has produced css/assets
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
+      # Deploy built files (replace 'dist' with your actual output folder)
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: dist # << set to your build output directory
+          clean: true # remove old files
+          single-commit: true # optional, keeps gh-pages history small
