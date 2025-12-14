@@ -1,0 +1,39 @@
+name: Deploy Static Site (Root)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write # needed to push to gh-pages
+  pages: read # not strictly necessary if not using actions/deploy-pages
+  id-token: write # not used here
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: self-hosted # your Windows runner
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build CSS
+        run: npm run build:css
+
+      # Deploy built files (replace 'dist' with your actual output folder)
+
+      - name: Deploy to GitHub Pages
+        run: npm run deploy
