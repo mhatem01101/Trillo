@@ -38,6 +38,6 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: dist # << set to your build output directory
-          clean: true # remove old files
-          single-commit: true # optional, keeps gh-pages history small
+          folder: ./
+          clean: true
+          single-commit: true
