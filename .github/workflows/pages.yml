@@ -34,10 +34,13 @@ jobs:
         run: npm run build:css
 
       # Deploy built files (replace 'dist' with your actual output folder)
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: ./
-          clean: true
-          single-commit: true
+          folder: ./ # e.g. dist, Trillo/dist, or ./ if root
+          clean: false # turn off rsync requirement
+          single-commit: true # optional: keeps gh-pages history compact
+          token: ${{ secrets.GITHUB_TOKEN }} # recommended
+
